@@ -180,4 +180,4 @@ A performance também é consequência da forma como os dados são:
 
 **armazenados → organizados → filtrados → lidos → processados → movimentados entre os nós do cluster.**
 
-Esse raciocínio é fundamental para projetar e otimizar arquiteturas Lakehouse em escala.
+
