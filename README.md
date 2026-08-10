@@ -1,4 +1,4 @@
-# 🚀 Delta Lake Performance Benchmark
+# 🚀 Delta Lake Performance
 
 ## Partitioning vs Z-ORDER vs Liquid Clustering
 
