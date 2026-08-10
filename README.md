@@ -191,4 +191,36 @@ A performance também é consequência da forma como os dados são:
 
 **armazenados → organizados → filtrados → lidos → processados → movimentados entre os nós do cluster.**
 
+# 📚 Literature & References
+
+This project is supported by academic and technical references related to **Delta Lake, Lakehouse architecture, data organization, and distributed query performance**.
+
+## Academic References
+
+1. **Armbrust, M. et al. (2020).**
+   *Delta Lake: High-Performance ACID Table Storage over Cloud Object Stores.*
+   PVLDB, 13(12), 3411–3424.
+   [DOI](https://doi.org/10.14778/3415478.3415560)
+
+2. **Armbrust, M. et al. (2021).**
+   *Lakehouse: A New Generation of Open Platforms that Unify Data Warehousing and Advanced Analytics.*
+   CIDR 2021.
+   [Paper](https://www.vldb.org/cidrdb/2021/lakehouse-a-new-generation-of-open-platforms-that-unify-data-warehousing-and-advanced-analytics.html)
+
+3. **Jain, A. et al. (2023).**
+   *Analyzing and Comparing Lakehouse Storage Systems.*
+   CIDR 2023.
+   [Paper](https://www.vldb.org/cidrdb/papers/2023/p92-jain.pdf)
+
+## Technical References
+
+* [Delta Lake Documentation](https://docs.delta.io/)
+* [Databricks — OPTIMIZE](https://docs.databricks.com/aws/en/sql/language-manual/delta-optimize)
+* [Databricks — Data Skipping](https://docs.databricks.com/aws/en/tables/data-skipping)
+* [Databricks — Liquid Clustering](https://docs.databricks.com/aws/en/delta/clustering)
+* [Apache Spark — Performance Tuning](https://spark.apache.org/docs/latest/sql-performance-tuning.html)
+
+> These references provide the theoretical and technical foundation for the benchmark experiments. Results should be interpreted as experimental observations rather than universal performance guarantees.
+
+
 
