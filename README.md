@@ -150,14 +150,25 @@ Por isso, o objetivo principal deste projeto é demonstrar **metodologia de benc
 ## 📁 Estrutura
 
 ```text
-liquid-clustering-performance/
+Delta-Lake-Performance-Benchmark/
 │
 ├── README.md
 ├── notebooks/
-│   └── Liquid_Clustering_Performance.ipynb
-├── docs/
-├── images/
-└── sql/
+│   └── Delta_Lake_Performance_Benchmark_Free_Edition.ipynb
+│   └── resultados_benchmark.md
+├── results/
+│   └── aggregation
+│   │   └── liquid.txt
+│   │   └── partitioned.txt
+│   │   └── zorder.txt
+│   └── join
+│   │   └── liquid.txt
+│   │   └── partitioned.txt
+│   │   └── zorder.txt
+│   └── selective_filter
+│   │   └── liquid.txt
+│   │   └── partitioned.txt
+│   │   └── zorder.txt
 ```
 
 ## 🚀 Como reproduzir
