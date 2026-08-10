@@ -1,0 +1,55 @@
+== Physical Plan ==
+AdaptiveSparkPlan (9)
++- == Initial Plan ==
+   PhotonResultStage (8)
+   +- PhotonColumnarToRow (7)
+      +- PhotonGroupingAgg (6)
+         +- PhotonShuffleExchangeSource (5)
+            +- PhotonShuffleMapStage (4)
+               +- PhotonShuffleExchangeSink (3)
+                  +- PhotonGroupingAgg (2)
+                     +- PhotonScan parquet workspace.liquid_clustering_benchmark.vendas_partitioned (1)
+
+
+(1) PhotonScan parquet workspace.liquid_clustering_benchmark.vendas_partitioned
+Output [2]: [valor#25420, categoria#25418]
+Location: PreparedDeltaFileIndex [s3://dbstorage-prod-8v1ue/uc/3bf609dd-34df-4d95-ad8c-5f6e56d59c0a/df11ed15-862f-49d8-8215-b629f7d7b6e0/__unitystorage/catalogs/06231899-2188-483f-bb42-1992d1c00fdb/tables/75538c08-5522-4f3d-ac0e-6f58f183fad3]
+ReadSchema: struct<valor:double>
+
+(2) PhotonGroupingAgg
+Input [2]: [valor#25420, categoria#25418]
+Arguments: [categoria#25418], [partial_avg(valor#25420) AS (sum#25427, count#25428L)], [sum#25425, count#25426L], [categoria#25418, sum#25427, count#25428L], false
+
+(3) PhotonShuffleExchangeSink
+Input [3]: [categoria#25418, sum#25427, count#25428L]
+Arguments: hashpartitioning(categoria#25418, 16)
+
+(4) PhotonShuffleMapStage
+Input [3]: [categoria#25418, sum#25427, count#25428L]
+Arguments: ENSURE_REQUIREMENTS, [id=#26287]
+
+(5) PhotonShuffleExchangeSource
+Input [3]: [categoria#25418, sum#25427, count#25428L]
+
+(6) PhotonGroupingAgg
+Input [3]: [categoria#25418, sum#25427, count#25428L]
+Arguments: [categoria#25418], [finalmerge_avg(merge sum#25427, count#25428L) AS avg(valor)#25421], [avg(valor)#25421], [categoria#25418, avg(valor)#25421 AS media_valor#25409], true
+
+(7) PhotonColumnarToRow
+Input [2]: [categoria#25418, media_valor#25409]
+
+(8) PhotonResultStage
+Input [2]: [categoria#25418, media_valor#25409]
+
+(9) AdaptiveSparkPlan
+Output [2]: [categoria#25418, media_valor#25409]
+Arguments: isFinalPlan=false
+
+
+== Photon Explanation ==
+The query is fully supported by Photon.
+== Optimizer Statistics (table names per statistics state) ==
+  missing = 
+  partial = 
+  full    = vendas_partitioned
+

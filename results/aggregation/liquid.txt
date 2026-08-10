@@ -1,0 +1,38 @@
+== Physical Plan ==
+AdaptiveSparkPlan (5)
++- == Initial Plan ==
+   PhotonResultStage (4)
+   +- PhotonColumnarToRow (3)
+      +- PhotonGroupingAgg (2)
+         +- PhotonScan parquet workspace.liquid_clustering_benchmark.vendas_liquid (1)
+
+
+(1) PhotonScan parquet workspace.liquid_clustering_benchmark.vendas_liquid
+Output [2]: [categoria#25498, valor#25500]
+Location: PreparedDeltaFileIndex [s3://dbstorage-prod-8v1ue/uc/3bf609dd-34df-4d95-ad8c-5f6e56d59c0a/df11ed15-862f-49d8-8215-b629f7d7b6e0/__unitystorage/catalogs/06231899-2188-483f-bb42-1992d1c00fdb/tables/ee489478-bdbf-4b92-b040-1b3152758f5f]
+ReadSchema: struct<categoria:int,valor:double>
+
+(2) PhotonGroupingAgg
+Input [2]: [categoria#25498, valor#25500]
+Arguments: [categoria#25498], [avg(valor#25500)], [avg(valor)#25501], [categoria#25498, avg(valor)#25501 AS media_valor#25489], true
+
+(3) PhotonColumnarToRow
+Input [2]: [categoria#25498, media_valor#25489]
+
+(4) PhotonResultStage
+Input [2]: [categoria#25498, media_valor#25489]
+
+(5) AdaptiveSparkPlan
+Output [2]: [categoria#25498, media_valor#25489]
+Arguments: isFinalPlan=false
+
+
+== Photon Explanation ==
+The query is fully supported by Photon.
+== Optimizer Statistics (table names per statistics state) ==
+  missing = vendas_liquid
+  partial = 
+  full    = 
+Corrective actions: consider running the following command on all tables with missing or partial statistics
+  ANALYZE TABLE <table-name> COMPUTE STATISTICS FOR ALL COLUMNS
+

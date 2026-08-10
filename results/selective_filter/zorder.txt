@@ -1,0 +1,42 @@
+=== SELECTIVE FILTER - Z-ORDER ===
+== Physical Plan ==
+AdaptiveSparkPlan (6)
++- == Initial Plan ==
+   PhotonResultStage (5)
+   +- PhotonColumnarToRow (4)
+      +- PhotonAgg (3)
+         +- PhotonProject (2)
+            +- PhotonScan parquet workspace.liquid_clustering_benchmark.vendas_zorder (1)
+
+
+(1) PhotonScan parquet workspace.liquid_clustering_benchmark.vendas_zorder
+Output [2]: [cliente_id#22046L, data_id#22048]
+DictionaryFilters: [(cliente_id#22046L = 12345), ((data_id#22048 >= 100) AND (data_id#22048 <= 120))]
+Location: PreparedDeltaFileIndex [s3://dbstorage-prod-8v1ue/uc/3bf609dd-34df-4d95-ad8c-5f6e56d59c0a/df11ed15-862f-49d8-8215-b629f7d7b6e0/__unitystorage/catalogs/06231899-2188-483f-bb42-1992d1c00fdb/tables/71083c56-d414-4c50-ab48-8537145a2d48]
+ReadSchema: struct<cliente_id:bigint,data_id:int>
+RequiredDataFilters: [isnotnull(cliente_id#22046L), isnotnull(data_id#22048), (cliente_id#22046L = 12345), (data_id#22048 >= 100), (data_id#22048 <= 120)]
+
+(2) PhotonProject
+Input [2]: [cliente_id#22046L, data_id#22048]
+
+(3) PhotonAgg
+Input: []
+Arguments: [count(1)], [count(1)#22050L], [count(1)#22050L AS COUNT(*)#22053L], true
+
+(4) PhotonColumnarToRow
+Input [1]: [COUNT(*)#22053L]
+
+(5) PhotonResultStage
+Input [1]: [COUNT(*)#22053L]
+
+(6) AdaptiveSparkPlan
+Output [1]: [COUNT(*)#22053L]
+Arguments: isFinalPlan=false
+
+
+== Photon Explanation ==
+The query is fully supported by Photon.
+== Optimizer Statistics (table names per statistics state) ==
+  missing = 
+  partial = 
+  full    = vendas_zorder

@@ -1,0 +1,44 @@
+=== SELECTIVE FILTER - LIQUID ===
+== Physical Plan ==
+AdaptiveSparkPlan (6)
++- == Initial Plan ==
+   PhotonResultStage (5)
+   +- PhotonColumnarToRow (4)
+      +- PhotonAgg (3)
+         +- PhotonProject (2)
+            +- PhotonScan parquet workspace.liquid_clustering_benchmark.vendas_liquid (1)
+
+
+(1) PhotonScan parquet workspace.liquid_clustering_benchmark.vendas_liquid
+Output [2]: [cliente_id#22092L, data_id#22094]
+DictionaryFilters: [(cliente_id#22092L = 12345), ((data_id#22094 >= 100) AND (data_id#22094 <= 120))]
+Location: PreparedDeltaFileIndex [s3://dbstorage-prod-8v1ue/uc/3bf609dd-34df-4d95-ad8c-5f6e56d59c0a/df11ed15-862f-49d8-8215-b629f7d7b6e0/__unitystorage/catalogs/06231899-2188-483f-bb42-1992d1c00fdb/tables/ee489478-bdbf-4b92-b040-1b3152758f5f]
+ReadSchema: struct<cliente_id:bigint,data_id:int>
+RequiredDataFilters: [isnotnull(cliente_id#22092L), isnotnull(data_id#22094), (cliente_id#22092L = 12345), (data_id#22094 >= 100), (data_id#22094 <= 120)]
+
+(2) PhotonProject
+Input [2]: [cliente_id#22092L, data_id#22094]
+
+(3) PhotonAgg
+Input: []
+Arguments: [count(1)], [count(1)#22096L], [count(1)#22096L AS COUNT(*)#22099L], true
+
+(4) PhotonColumnarToRow
+Input [1]: [COUNT(*)#22099L]
+
+(5) PhotonResultStage
+Input [1]: [COUNT(*)#22099L]
+
+(6) AdaptiveSparkPlan
+Output [1]: [COUNT(*)#22099L]
+Arguments: isFinalPlan=false
+
+
+== Photon Explanation ==
+The query is fully supported by Photon.
+== Optimizer Statistics (table names per statistics state) ==
+  missing = vendas_liquid
+  partial = 
+  full    = 
+Corrective actions: consider running the following command on all tables with missing or partial statistics
+  ANALYZE TABLE <table-name> COMPUTE STATISTICS FOR ALL COLUMNS

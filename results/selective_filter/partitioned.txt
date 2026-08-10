@@ -1,0 +1,61 @@
+=== SELECTIVE FILTER - PARTITIONED ===
+== Physical Plan ==
+AdaptiveSparkPlan (10)
++- == Initial Plan ==
+   PhotonResultStage (9)
+   +- PhotonColumnarToRow (8)
+      +- PhotonAgg (7)
+         +- PhotonShuffleExchangeSource (6)
+            +- PhotonShuffleMapStage (5)
+               +- PhotonShuffleExchangeSink (4)
+                  +- PhotonAgg (3)
+                     +- PhotonProject (2)
+                        +- PhotonScan parquet workspace.liquid_clustering_benchmark.vendas_partitioned (1)
+
+
+(1) PhotonScan parquet workspace.liquid_clustering_benchmark.vendas_partitioned
+Output [3]: [cliente_id#22000L, data_id#22002, categoria#22001]
+DictionaryFilters: [(cliente_id#22000L = 12345), ((data_id#22002 >= 100) AND (data_id#22002 <= 120))]
+Location: PreparedDeltaFileIndex [s3://dbstorage-prod-8v1ue/uc/3bf609dd-34df-4d95-ad8c-5f6e56d59c0a/df11ed15-862f-49d8-8215-b629f7d7b6e0/__unitystorage/catalogs/06231899-2188-483f-bb42-1992d1c00fdb/tables/75538c08-5522-4f3d-ac0e-6f58f183fad3]
+ReadSchema: struct<cliente_id:bigint,data_id:int>
+RequiredDataFilters: [isnotnull(cliente_id#22000L), isnotnull(data_id#22002), (cliente_id#22000L = 12345), (data_id#22002 >= 100), (data_id#22002 <= 120)]
+
+(2) PhotonProject
+Input [3]: [cliente_id#22000L, data_id#22002, categoria#22001]
+
+(3) PhotonAgg
+Input: []
+Arguments: [partial_count(1) AS count#22023L], [count#22022L], [count#22023L], false
+
+(4) PhotonShuffleExchangeSink
+Input [1]: [count#22023L]
+Arguments: SinglePartition
+
+(5) PhotonShuffleMapStage
+Input [1]: [count#22023L]
+Arguments: ENSURE_REQUIREMENTS, [id=#18968]
+
+(6) PhotonShuffleExchangeSource
+Input [1]: [count#22023L]
+
+(7) PhotonAgg
+Input [1]: [count#22023L]
+Arguments: [finalmerge_count(merge count#22023L) AS count(1)#22004L], [count(1)#22004L], [count(1)#22004L AS COUNT(*)#22007L], true
+
+(8) PhotonColumnarToRow
+Input [1]: [COUNT(*)#22007L]
+
+(9) PhotonResultStage
+Input [1]: [COUNT(*)#22007L]
+
+(10) AdaptiveSparkPlan
+Output [1]: [COUNT(*)#22007L]
+Arguments: isFinalPlan=false
+
+
+== Photon Explanation ==
+The query is fully supported by Photon.
+== Optimizer Statistics (table names per statistics state) ==
+  missing = 
+  partial = 
+  full    = vendas_partitioned

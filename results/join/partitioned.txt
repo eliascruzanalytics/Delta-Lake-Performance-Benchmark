@@ -1,0 +1,95 @@
+=== JOIN - PARTITIONED ===
+== Physical Plan ==
+AdaptiveSparkPlan (16)
++- == Initial Plan ==
+   PhotonResultStage (15)
+   +- PhotonColumnarToRow (14)
+      +- PhotonGroupingAgg (13)
+         +- PhotonShuffleExchangeSource (12)
+            +- PhotonShuffleMapStage (11)
+               +- PhotonShuffleExchangeSink (10)
+                  +- PhotonGroupingAgg (9)
+                     +- PhotonProject (8)
+                        +- PhotonBroadcastHashJoin Inner (7)
+                           :- PhotonProject (2)
+                           :  +- PhotonScan parquet workspace.liquid_clustering_benchmark.vendas_partitioned (1)
+                           +- PhotonShuffleExchangeSource (6)
+                              +- PhotonShuffleMapStage (5)
+                                 +- PhotonShuffleExchangeSink (4)
+                                    +- PhotonScan parquet workspace.liquid_clustering_benchmark.clientes (3)
+
+
+(1) PhotonScan parquet workspace.liquid_clustering_benchmark.vendas_partitioned
+Output [3]: [cliente_id#23624L, valor#23627, categoria#23625]
+Location: PreparedDeltaFileIndex [s3://dbstorage-prod-8v1ue/uc/3bf609dd-34df-4d95-ad8c-5f6e56d59c0a/df11ed15-862f-49d8-8215-b629f7d7b6e0/__unitystorage/catalogs/06231899-2188-483f-bb42-1992d1c00fdb/tables/75538c08-5522-4f3d-ac0e-6f58f183fad3]
+OptionalDataFilters: [hashedrelationcontains(cliente_id#23624L)]
+ReadSchema: struct<cliente_id:bigint,valor:double>
+RequiredDataFilters: [isnotnull(cliente_id#23624L)]
+
+(2) PhotonProject
+Input [3]: [cliente_id#23624L, valor#23627, categoria#23625]
+Arguments: [cliente_id#23624L, valor#23627]
+
+(3) PhotonScan parquet workspace.liquid_clustering_benchmark.clientes
+Output [2]: [cliente_id#23628L, segmento#23630]
+Location: PreparedDeltaFileIndex [s3://dbstorage-prod-8v1ue/uc/3bf609dd-34df-4d95-ad8c-5f6e56d59c0a/df11ed15-862f-49d8-8215-b629f7d7b6e0/__unitystorage/catalogs/06231899-2188-483f-bb42-1992d1c00fdb/tables/ace085be-c1e3-454e-91a7-b505bdfcea24]
+ReadSchema: struct<cliente_id:bigint,segmento:string>
+RequiredDataFilters: [isnotnull(cliente_id#23628L)]
+
+(4) PhotonShuffleExchangeSink
+Input [2]: [cliente_id#23628L, segmento#23630]
+Arguments: SinglePartition
+
+(5) PhotonShuffleMapStage
+Input [2]: [cliente_id#23628L, segmento#23630]
+Arguments: EXECUTOR_BROADCAST, [id=#24753]
+
+(6) PhotonShuffleExchangeSource
+Input [2]: [cliente_id#23628L, segmento#23630]
+
+(7) PhotonBroadcastHashJoin
+Left keys [1]: [cliente_id#23624L]
+Right keys [1]: [cliente_id#23628L]
+Join type: Inner
+Join condition: None
+
+(8) PhotonProject
+Input [4]: [cliente_id#23624L, valor#23627, cliente_id#23628L, segmento#23630]
+Arguments: [valor#23627, segmento#23630]
+
+(9) PhotonGroupingAgg
+Input [2]: [valor#23627, segmento#23630]
+Arguments: [segmento#23630], [partial_sum(valor#23627) AS sum#23645], [sum#23644], [segmento#23630, sum#23645], false
+
+(10) PhotonShuffleExchangeSink
+Input [2]: [segmento#23630, sum#23645]
+Arguments: hashpartitioning(segmento#23630, 32)
+
+(11) PhotonShuffleMapStage
+Input [2]: [segmento#23630, sum#23645]
+Arguments: ENSURE_REQUIREMENTS, [id=#24766]
+
+(12) PhotonShuffleExchangeSource
+Input [2]: [segmento#23630, sum#23645]
+
+(13) PhotonGroupingAgg
+Input [2]: [segmento#23630, sum#23645]
+Arguments: [segmento#23630], [finalmerge_sum(merge sum#23645) AS sum(valor)#23631], [sum(valor)#23631], [segmento#23630, sum(valor)#23631 AS total_valor#23613], true
+
+(14) PhotonColumnarToRow
+Input [2]: [segmento#23630, total_valor#23613]
+
+(15) PhotonResultStage
+Input [2]: [segmento#23630, total_valor#23613]
+
+(16) AdaptiveSparkPlan
+Output [2]: [segmento#23630, total_valor#23613]
+Arguments: isFinalPlan=false
+
+
+== Photon Explanation ==
+The query is fully supported by Photon.
+== Optimizer Statistics (table names per statistics state) ==
+  missing = 
+  partial = 
+  full    = clientes, vendas_partitioned
